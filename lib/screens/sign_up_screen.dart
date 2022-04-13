@@ -1,7 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone/resources/auth_methods.dart';
+import 'package:instagram_clone/screens/login_screen.dart';
 import 'package:instagram_clone/utils/colors.dart';
+import 'package:instagram_clone/utils/utils.dart';
 import 'package:instagram_clone/widgets/text_field_input.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -16,7 +21,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
+  Uint8List? _image;
 
+  bool _isLoading = false;
   @override
   void dispose() {
     super.dispose();
@@ -24,6 +31,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _passwordController.dispose();
     _bioController.dispose();
     _usernameController.dispose();
+  }
+
+  void selectImage() async {
+    Uint8List img = await pickImage(ImageSource.gallery);
+
+    setState(() {
+      _image = img;
+    });
+  }
+
+  void signUpUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethods().signUpUser(
+        email: _emailController.text,
+        password: _passwordController.text,
+        username: _usernameController.text,
+        bio: _bioController.text,
+        file: _image!);
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    if (res != 'success') {
+      showSnackBar(res, context);
+    }
   }
 
   @override
@@ -48,17 +83,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
             Stack(
               children: [
-                const CircleAvatar(
-                  radius: 65,
-                  backgroundImage: NetworkImage(
-                    'https://www.postoast.com/wp-content/uploads/2020/04/Money-Heist-Professor-%C3%81lvaro-Morte-6.jpg',
-                  ),
-                ),
+                _image != null
+                    ? CircleAvatar(
+                        radius: 65,
+                        backgroundImage: MemoryImage(_image!),
+                      )
+                    : const CircleAvatar(
+                        radius: 65,
+                        backgroundImage: NetworkImage(
+                          'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg',
+                        ),
+                      ),
                 Positioned(
                     bottom: -10,
                     left: 80,
                     child: IconButton(
-                      onPressed: () {},
+                      onPressed: selectImage,
                       icon: Icon(Icons.add_a_photo),
                       iconSize: 18,
                     ))
@@ -101,22 +141,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
               height: 25,
             ),
             InkWell(
-              onTap: () async {
-                String res = await AuthMethods().signUpUser(
-                  email: _emailController.text,
-                  password: _passwordController.text,
-                  username: _usernameController.text,
-                  bio: _bioController.text,
-                );
-                print(res);
-              },
+              onTap: signUpUser,
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 width: double.infinity,
-                child: const Text(
-                  'Sign up',
-                  style: TextStyle(fontSize: 16),
-                ),
+                child: _isLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                        color: Colors.white,
+                      ))
+                    : const Text(
+                        'Sign up',
+                        style: TextStyle(fontSize: 16),
+                      ),
                 alignment: Alignment.center,
                 decoration: const ShapeDecoration(
                   color: blueColor,
@@ -148,7 +185,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) => LoginScreen())));
+                  },
                   child: Container(
                     child: const Text(
                       "Login.",
@@ -160,7 +202,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
               ],
-            )
+            ),
+            SizedBox(
+              height: 20,
+            ),
           ]),
         ),
       ),

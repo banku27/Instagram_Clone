@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:instagram_clone/screens/sign_up_screen.dart';
 import 'package:instagram_clone/utils/colors.dart';
 import 'package:instagram_clone/widgets/text_field_input.dart';
 
@@ -95,7 +96,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SignUpScreen()));
+                  },
                   child: Container(
                     child: const Text(
                       "Sign up.",
