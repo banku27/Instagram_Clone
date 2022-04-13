@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:instagram_clone/resources/auth_methods.dart';
 import 'package:instagram_clone/utils/colors.dart';
 import 'package:instagram_clone/widgets/text_field_input.dart';
 
@@ -68,7 +69,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
             TextFieldInput(
               hintText: 'Enter your username',
-              textEditingController: _emailController,
+              textEditingController: _usernameController,
               textInputType: TextInputType.text,
             ),
             const SizedBox(
@@ -95,24 +96,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
               hintText: 'Enter your bio',
               textEditingController: _bioController,
               textInputType: TextInputType.text,
-              isPass: true,
             ),
             const SizedBox(
               height: 25,
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              width: double.infinity,
-              child: const Text(
-                'Log in',
-                style: TextStyle(fontSize: 16),
-              ),
-              alignment: Alignment.center,
-              decoration: const ShapeDecoration(
-                color: blueColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(4),
+            InkWell(
+              onTap: () async {
+                String res = await AuthMethods().signUpUser(
+                  email: _emailController.text,
+                  password: _passwordController.text,
+                  username: _usernameController.text,
+                  bio: _bioController.text,
+                );
+                print(res);
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                width: double.infinity,
+                child: const Text(
+                  'Sign up',
+                  style: TextStyle(fontSize: 16),
+                ),
+                alignment: Alignment.center,
+                decoration: const ShapeDecoration(
+                  color: blueColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(4),
+                    ),
                   ),
                 ),
               ),
