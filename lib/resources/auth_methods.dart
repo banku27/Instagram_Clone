@@ -40,7 +40,7 @@ class AuthMethods {
           'photoUrl': photoUrl,
         });
 
-        res = "succwss";
+        res = "success";
       }
     } on FirebaseAuthException catch (err) {
       if (err.code == 'invalid-email') {
@@ -54,3 +54,19 @@ class AuthMethods {
     return res;
   }
 }
+
+// Future<String> loginUser(
+//     {required String email, required String password}) async {
+//   String res = "some error occured";
+
+//   try {
+//     if (email.isNotEmpty || password.isNotEmpty) {
+//       await _auth.signInWithEmailAndPassword(email: email, password: password);
+//       res = "success";
+//     } else {
+//       res = "Please enter all the fields";
+//     }
+//   } catch (err) {
+//     res = err.toString();
+//   }
+// }

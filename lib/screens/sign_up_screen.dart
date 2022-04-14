@@ -67,7 +67,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
         _isLoading = false;
       });
       // show the error
-      // showSnackBar(context, res);
+      if (res != 'success') {
+        showSnackBar(context, res);
+      }
     }
   }
 
