@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:instagram_clone/resources/storage_methods.dart';
 
 class AuthMethods {
@@ -26,7 +25,9 @@ class AuthMethods {
         //register user
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
-        print(cred.user!.uid);
+
+        print("User Uid ()()():::::::::::::>" + cred.user!.uid);
+
         String photoUrl = await StorageMethods()
             .uploadImageToStorage('Profilepic', file, false);
 
@@ -41,6 +42,11 @@ class AuthMethods {
         });
 
         res = "success";
+        print("User Info ()()()::::::::::::::> " +
+            username +
+            cred.user!.uid +
+            email +
+            bio);
       }
     } on FirebaseAuthException catch (err) {
       if (err.code == 'invalid-email') {
